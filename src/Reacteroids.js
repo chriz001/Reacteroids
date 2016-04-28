@@ -20,6 +20,7 @@ export class Reacteroids extends Component {
       screen: {
         width: window.innerWidth,
         height: window.innerHeight,
+        ratio: window.devicePixelRatio || 1,
       },
       context: null,
       keys : {
@@ -45,6 +46,7 @@ export class Reacteroids extends Component {
       screen : {
         width: window.innerWidth,
         height: window.innerHeight,
+        ratio: window.devicePixelRatio || 1,
       }
     });
   }
@@ -82,6 +84,9 @@ export class Reacteroids extends Component {
     const keys = this.state.keys;
     const ship = this.ship[0];
 
+    context.save();
+    context.scale(this.state.screen.ratio, this.state.screen.ratio);
+
     // Motion trail
     context.fillStyle = '#000';
     context.globalAlpha = 0.4;
@@ -104,6 +109,8 @@ export class Reacteroids extends Component {
     this.updateObjects(this.asteroids, 'asteroids')
     this.updateObjects(this.bullets, 'bullets')
     this.updateObjects(this.ship, 'ship')
+
+    context.restore();
 
     // Next frame
     requestAnimationFrame(() => {this.update()});
@@ -246,7 +253,10 @@ export class Reacteroids extends Component {
           Use [A][S][W][D] or [←][↑][↓][→] to MOVE<br/>
           Use [SPACE] to SHOOT
         </span>
-        <canvas ref="canvas" width={this.state.screen.width} height={this.state.screen.height} />
+        <canvas ref="canvas"
+          width={this.state.screen.width * this.state.screen.ratio}
+          height={this.state.screen.height * this.state.screen.ratio}
+        />
       </div>
     );
   }
