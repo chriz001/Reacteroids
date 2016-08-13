@@ -43,7 +43,7 @@
     "express": "^4.13.3",
     "react-transform-catch-errors": "^1.0.0",
     "react-transform-hmr": "^1.0.0",
-    "redbox-react": "^1.0.1",
+    "redbox-react": "1.0.1",
     "rimraf": "^2.4.3",
     "style-loader": "^0.13.0",
     "webpack": "^1.9.6",
