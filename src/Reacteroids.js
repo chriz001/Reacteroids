@@ -74,8 +74,8 @@ export class Reacteroids extends Component {
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.handleKeys);
-    window.removeEventListener('resize', this.handleKeys);
+    window.removeEventListener('keyup', this.handleKeys);
+    window.removeEventListener('keydown', this.handleKeys);
     window.removeEventListener('resize', this.handleResize);
   }
 
