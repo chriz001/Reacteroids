@@ -212,11 +212,12 @@ export class Reacteroids extends Component {
   checkCollision(obj1, obj2){
     var vx = obj1.position.x - obj2.position.x;
     var vy = obj1.position.y - obj2.position.y;
-    var length = Math.sqrt(vx * vx + vy * vy);
-    if(length < obj1.radius + obj2.radius){
-      return true;
-    }
-    return false;
+
+    // Keep the distance squared
+    // to avoid the expensive sqrt operation
+    var distanceSquared = vx * vx + vy * vy;
+
+    return distanceSquared <= Math.pow(obj1.radius + obj2.radius, 2);
   }
 
   render() {
