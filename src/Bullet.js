@@ -13,10 +13,23 @@ export default class Bullet {
       y:posDelta.y / 2
     };
     this.radius = 2;
+
+    this.beforePauseVelocity = this.velocity
   }
 
   destroy(){
     this.delete = true;
+  }
+
+  pause(){
+    this.velocity = {
+      x: 0,
+      y: 0
+    }
+  }
+
+  unPause(){    
+    this.velocity = this.beforePauseVelocity     
   }
 
   render(state){

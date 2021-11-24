@@ -15,6 +15,8 @@ export default class Asteroid {
     this.create = args.create;
     this.addScore = args.addScore;
     this.vertices = asteroidVertices(8, args.size)
+
+    this.beforePauseVelocity = this.velocity
   }
 
   destroy(){
@@ -54,6 +56,17 @@ export default class Asteroid {
         this.create(asteroid, 'asteroids');
       }
     }
+  }
+
+  pause(){
+    this.velocity = {
+      x: 0,
+      y: 0
+    }
+  }
+
+  unPause(){    
+    this.velocity = this.beforePauseVelocity     
   }
 
   render(state){
