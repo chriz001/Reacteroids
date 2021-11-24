@@ -17,6 +17,8 @@ export default class Ship {
     this.lastShot = 0;
     this.create = args.create;
     this.onDie = args.onDie;
+
+    this.beforePauseVelocity = this.velocity
   }
 
   destroy(){
@@ -69,6 +71,22 @@ export default class Ship {
       }
     });
     this.create(particle, 'particles');
+  }
+
+  pause(){
+    this.beforePauseVelocity = this.velocity 
+    this.velocity = {
+      x: 0,
+      y: 0
+    }
+    this.speed = 0
+    this.rotationSpeed = 0
+  }
+
+  unPause(){    
+    this.velocity = this.beforePauseVelocity
+    this.speed = 0.15
+    this.rotationSpeed = 6
   }
 
   render(state){

@@ -10,7 +10,8 @@ const KEY = {
   A: 65,
   D: 68,
   W: 87,
-  SPACE: 32
+  SPACE: 32,
+  ESC: 27
 };
 
 export class Reacteroids extends Component {
@@ -29,11 +30,13 @@ export class Reacteroids extends Component {
         up    : 0,
         down  : 0,
         space : 0,
+        esc   : 0,
       },
       asteroidCount: 3,
       currentScore: 0,
       topScore: localStorage['topscore'] || 0,
-      inGame: false
+      inGame: false,
+      pause: false
     }
     this.ship = [];
     this.asteroids = [];
@@ -53,19 +56,44 @@ export class Reacteroids extends Component {
 
   handleKeys(value, e){
     let keys = this.state.keys;
-    if(e.keyCode === KEY.LEFT   || e.keyCode === KEY.A) keys.left  = value;
-    if(e.keyCode === KEY.RIGHT  || e.keyCode === KEY.D) keys.right = value;
-    if(e.keyCode === KEY.UP     || e.keyCode === KEY.W) keys.up    = value;
-    if(e.keyCode === KEY.SPACE) keys.space = value;
+    const finalValue = !this.state.pause ? value : 0
+
+    if(e.keyCode === KEY.LEFT   || e.keyCode === KEY.A) keys.left  = finalValue;
+    if(e.keyCode === KEY.RIGHT  || e.keyCode === KEY.D) keys.right = finalValue;
+    if(e.keyCode === KEY.UP     || e.keyCode === KEY.W) keys.up    = finalValue;
+    if(e.keyCode === KEY.SPACE) keys.space = finalValue;
     this.setState({
       keys : keys
     });
+  }
+
+  handlePause(e){
+    if(e.keyCode === KEY.ESC && this.state.inGame){
+
+      const pause = this.state.pause
+      if(pause){
+        this.ship[0].unPause()
+        this.asteroids.forEach(asteroid => asteroid.unPause())
+        this.bullets.forEach(bullet => bullet.unPause())
+        this.particles.forEach(particle => particle.unPause())
+      }else{
+        this.ship[0].pause() 
+        this.asteroids.forEach(asteroid => asteroid.pause())
+        this.bullets.forEach(bullet => bullet.pause())
+        this.particles.forEach(particle => particle.pause())
+      }
+
+      this.setState({       
+        pause: !pause
+      })
+    }
   }
 
   componentDidMount() {
     window.addEventListener('keyup',   this.handleKeys.bind(this, false));
     window.addEventListener('keydown', this.handleKeys.bind(this, true));
     window.addEventListener('resize',  this.handleResize.bind(this, false));
+    window.addEventListener('keydown', this.handlePause.bind(this));
 
     const context = this.refs.canvas.getContext('2d');
     this.setState({ context: context });
@@ -77,6 +105,7 @@ export class Reacteroids extends Component {
     window.removeEventListener('keyup', this.handleKeys);
     window.removeEventListener('keydown', this.handleKeys);
     window.removeEventListener('resize', this.handleResize);
+    window.removeEventListener('keydown', this.handlePause);
   }
 
   update() {
@@ -222,6 +251,7 @@ export class Reacteroids extends Component {
   render() {
     let endgame;
     let message;
+    let onPause;
 
     if (this.state.currentScore <= 0) {
       message = '0 points... So sad.';
@@ -244,14 +274,27 @@ export class Reacteroids extends Component {
       )
     }
 
+    if(this.state.pause){
+      onPause = (
+        <div className="pausegame">
+          <p>Pause</p>
+          <p>press [ESC] to resume</p>
+        </div>
+      )
+    }else{
+      onPause = (<div></div>)
+    }
+
     return (
       <div>
         { endgame }
+        { onPause }
         <span className="score current-score" >Score: {this.state.currentScore}</span>
         <span className="score top-score" >Top Score: {this.state.topScore}</span>
         <span className="controls" >
           Use [A][S][W][D] or [←][↑][↓][→] to MOVE<br/>
-          Use [SPACE] to SHOOT
+          Use [SPACE] to SHOOT <br/>
+          Use [ESC] to PAUSE
         </span>
         <canvas ref="canvas"
           width={this.state.screen.width * this.state.screen.ratio}

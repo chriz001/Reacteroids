@@ -5,10 +5,22 @@ export default class Particle {
     this.radius = args.size;
     this.lifeSpan = args.lifeSpan;
     this.inertia = 0.98;
+
+    this.isPaused = false
   }
 
   destroy(){
     this.delete = true;
+  }
+
+  pause(){
+    this.velocity = {x:0, y:0}
+    this.isPaused = true
+  }
+
+  unPause(){
+    this.isPaused = false
+    this.velocity = {x:0.5, y:0.5}
   }
 
   render(state){
@@ -19,11 +31,14 @@ export default class Particle {
     this.velocity.y *= this.inertia;
 
     // Shrink
-    this.radius -= 0.1;
+    if(!this.isPaused){
+      this.radius -= 0.1;
+      this.lifeSpan -= 1
+    }
     if(this.radius < 0.1) {
       this.radius = 0.1;
     }
-    if(this.lifeSpan-- < 0){
+    if(this.lifeSpan < 0){
       this.destroy()
     }
 
